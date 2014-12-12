@@ -1,0 +1,12 @@
+autobahn
+pytz
+requests
+Twisted
+
+# Required by autobahn
+zope.interface
+
+# Required for secure WebSockets connections
+PyOpenSSL
+service_identity
+

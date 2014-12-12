@@ -1,0 +1,6 @@
+*.ini
+*.pyc
+*.pyo
+*~
+*.swp
+env
