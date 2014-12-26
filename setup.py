@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from distutils.core import setup
+from setuptools import setup
 
 setup(
 	name='slackrealtime',
@@ -10,11 +10,20 @@ setup(
 	url='https://github.com/micolous/python-slackrealtime',
 	packages=['slackrealtime'],
 	package_dir={'slackrealtime': 'src/slackrealtime'},
+	install_requires=[
+		'autobahn',
+		'pytz',
+		'requests',
+		'Twisted',
+		'zope.interface',
+		'PyOpenSSL',
+		'service_identity',
+	],
 	classifiers=[
 		'Development Status :: 3 - Alpha',
 		'Framework :: Twisted',
 		'Intended Audience :: Developers',
 		'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
 		'Topic :: Communications :: Chat',
-	]
+	],
 )

@@ -21,8 +21,7 @@ from argparse import ArgumentParser
 from twisted.internet import reactor
 from twisted.python import log
 from sys import stdout
-from . import connect
-from .protocol import RtmProtocol
+from . import connect, RtmProtocol
 
 
 class TestClientProtocol(RtmProtocol):

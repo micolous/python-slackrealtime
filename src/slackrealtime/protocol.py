@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import absolute_import
 from autobahn.twisted.websocket import WebSocketClientProtocol
+from sys import maxint
 from twisted.python import log
 from .event import decode_event
 
@@ -30,6 +31,7 @@ except ImportError:
 class RtmProtocol(WebSocketClientProtocol):
 	def _seedMetadata(self, meta):
 		self.meta = meta
+		self.next_message_id = 1
 		return self
 
 	def onMessage(self, msg, binary):
@@ -53,6 +55,18 @@ class RtmProtocol(WebSocketClientProtocol):
 	def onSlackEvent(self, event):
 		log.msg('Default onSlackEvent() handler called.')
 
-	def sendCommand(self, msg):
+	def sendCommand(self, **msg):
+		"""
+		Sends a raw command to the Slack server, generating a message ID automatically.
+		"""
+		assert 'type' in msg, 'Message type is required.'
+
+		msg['id'] = self.next_message_id
+		self.next_message_id += 1
+
+		if self.next_message_id >= maxint:
+			self.next_message_id = 1
+
 		self.sendMessage(json.dumps(msg))
+		return msg['id']
 
