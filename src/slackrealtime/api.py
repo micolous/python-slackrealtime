@@ -23,6 +23,9 @@ from urlparse import urljoin
 SLACK_API_URL = 'https://slack.com/api/'
 
 class SlackError(Exception):
+	"""
+	Thrown by ``SlackMethod`` calls in response to an error returned by the Slack API.
+	"""
 	pass
 
 class SlackMethod(object):
@@ -31,10 +34,8 @@ class SlackMethod(object):
 		self.method = group + '.' + method
 
 	def __call__(self, **params):
-		print 'calling: %s(%r)' % (self.method, params)
 		response = requests.post(urljoin(self.url, self.method), data=params)
-		
-		print 'response = %r' % (urljoin(self.url, self.method),)
+
 		response = response.json()
 
 		assert response['ok'] in (True, False), 'ok must be True or False'
@@ -62,6 +63,24 @@ class SlackMethodGroup(object):
 
 
 class SlackApi(object):
+	"""
+	SlackApi is a barebones, zero-knowledge (dynamic) implementation of Slack's REST API.  
+
+	It uses some ``__getattr__`` and ``__call__`` tricks in order to present the API it's
+	method calls as a set of Python objects, allowing interactions like this::
+
+		slack = SlackApi()
+		response = slack.rtm.start(token=token)
+
+	It automatically handles the deserialisation of objects for you, and sends parameters
+	as a ``HTTP POST`` request.  When errors occur, they are thrown as a
+	``SlackException``.
+
+	When the official Slack HTTPS URI is used (the default), ``requests`` provides a
+	certificate and connection validation facility.
+
+	Reference for the Slack API is provided at: https://api.slack.com/
+	"""
 	def __init__(self, url=SLACK_API_URL):
 		if not url.endswith('/'):
 			url += '/'
