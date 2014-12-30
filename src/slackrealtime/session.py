@@ -179,9 +179,8 @@ class SessionMetadata(object):
 			uid = event.user[u'id']
 			del event.user[u'id']
 
-			presence = self.users[uid][u'presence']
-			if event.user[u'status'] is None:
-				event.user[u'status'] = presence
+			if event.user[u'status'] is None and u'presence' in self.users[uid]:
+				event.user[u'status'] = self.users[uid][u'presence']
 
 			self.users[uid] = event.user
 		elif isinstance(event, TeamPrefChange):
