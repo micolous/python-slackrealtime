@@ -56,6 +56,43 @@ class SessionMetadata(object):
 		# All bots on the slack instance.
 		self.bots = transform_metadata(data['bots'])
 
+	def _find_resource_by_key(self, resource_list, key, value):
+		"""
+		Finds a resource by key, first case insensitive match.
+
+		Raises KeyError if the given key cannot be found.
+		"""
+		value = value.upper()
+		for resource in resource_list:
+			if key in resource and resource[key].upper() == value:
+				return resource
+
+		raise KeyError, key
+
+	def find_channel_by_name(self, name):
+		"""
+		Finds the channel's resource by name, or returns None if not found.
+		"""
+		return self._find_resource_by_key(self.channels, u'name', name)
+
+	def find_user_by_name(self, name):
+		return self._find_resource_by_key(self.users, u'name', name)
+
+	def find_group_by_name(self, name):
+		return self._find_resource_by_key(self.groups, u'name', name)
+
+	def find_im_by_user_id(self, uid):
+		return self._find_resource_by_key(self.ims, u'user', uid)
+
+	def find_im_by_user_name(self, name, auto_create=True):
+		uid = self.find_user_by_name(name)
+		try:
+			return self.find_im_by_user_id(uid)
+		except KeyError:
+			# IM does not exist, create it?
+			if auto_create:
+				self.protocol.
+
 	def update(self, event):
 		"""
 		All messages from the Protocol get passed through this method.  This

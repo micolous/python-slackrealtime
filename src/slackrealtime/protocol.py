@@ -31,6 +31,7 @@ except ImportError:
 class RtmProtocol(WebSocketClientProtocol):
 	def _seedMetadata(self, meta):
 		self.meta = meta
+		self.meta.protocol = self
 		self.next_message_id = 1
 		return self
 
@@ -70,3 +71,15 @@ class RtmProtocol(WebSocketClientProtocol):
 		self.sendMessage(json.dumps(msg))
 		return msg['id']
 
+	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None):
+		"""
+		Sends a chat message to a given id, user, group or channel.
+		"""
+		if id is not None:
+			assert user is None, 'id and user cannot both be set.'
+			assert group is None, 'id and group cannot both be set.'
+			assert channel is None, 'id and channel cannot both be set.'
+
+		elif user is not None:
+			# Private message to user.  Resolve the user first.
+			
