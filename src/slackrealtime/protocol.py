@@ -71,15 +71,38 @@ class RtmProtocol(WebSocketClientProtocol):
 		self.sendMessage(json.dumps(msg))
 		return msg['id']
 
-	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None):
+
+	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None, parse='none'):
 		"""
 		Sends a chat message to a given id, user, group or channel.
+
+		Note: channel names must **not** be preceeded with ``#``.
 		"""
 		if id is not None:
 			assert user is None, 'id and user cannot both be set.'
 			assert group is None, 'id and group cannot both be set.'
 			assert channel is None, 'id and channel cannot both be set.'
-
 		elif user is not None:
-			# Private message to user.  Resolve the user first.
-			
+			assert group is None, 'user and group cannot both be set.'
+			assert channel is None, 'user and channel cannot both be set.'
+
+			# Private message to user, get the IM name
+			id = self.meta.find_im_by_user_name(user, auto_create=True)[0]
+		elif group is not None:
+			assert channel is None, 'group and channel cannot both be set.'
+
+			# Message to private group, get the group name.
+			id = self.meta.find_group_by_name(group)[0]
+		elif channel is not None:
+			# Message sent to a channel
+			id = self.meta.find_channel_by_name(channel)[0]
+		else:
+			raise Exception, 'Should not reach here.'
+
+		# Now send a message
+		return self.sendCommand(
+			type='message',
+			channel=id,
+			text=text,
+			parse=parse,
+		)

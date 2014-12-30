@@ -61,7 +61,7 @@ class BaseHistoryChanged(BaseEvent):
 		self.latest = datetime.fromtimestamp(float(self._b['latest']), UTC)
 		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), UTC)
 
-
+class Ack(BaseEvent): pass
 class ChannelArchive(BaseEvent): pass
 class ChannelCreated(BaseEvent): pass
 class ChannelDeleted(BaseEvent): pass
@@ -108,7 +108,10 @@ EVENT_HANDLERS = {
 
 def decode_event(event):
 	event = event.copy()
-	if event['type'] in EVENT_HANDLERS:
+	if 'type' not in event:
+		# This is an acknowledgement of a previous command.
+		return Ack(event)
+	elif event['type'] in EVENT_HANDLERS:
 		t = event['type']
 		return EVENT_HANDLERS[t](event)
 	else:

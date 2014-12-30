@@ -36,7 +36,10 @@ def transform_metadata(blob):
 
 
 class SessionMetadata(object):
-	def __init__(self, data):
+	def __init__(self, data, api, token):
+		self.api = api
+		self.token = token
+
 		self.url = data['url']
 		self.me = data['self']
 		self.team = data['team']
@@ -60,18 +63,21 @@ class SessionMetadata(object):
 		"""
 		Finds a resource by key, first case insensitive match.
 
+		Returns tuple of (key, resource)
+
 		Raises KeyError if the given key cannot be found.
 		"""
-		value = value.upper()
-		for resource in resource_list:
+		original = value
+		value = unicode(value.upper())
+		for k, resource in resource_list.iteritems():
 			if key in resource and resource[key].upper() == value:
-				return resource
+				return k, resource
 
-		raise KeyError, key
+		raise KeyError, original
 
 	def find_channel_by_name(self, name):
 		"""
-		Finds the channel's resource by name, or returns None if not found.
+		Finds the channel's resource by name.
 		"""
 		return self._find_resource_by_key(self.channels, u'name', name)
 
@@ -85,13 +91,20 @@ class SessionMetadata(object):
 		return self._find_resource_by_key(self.ims, u'user', uid)
 
 	def find_im_by_user_name(self, name, auto_create=True):
-		uid = self.find_user_by_name(name)
+		"""
+		Finds the ID of the IM with a particular user by name, with the option
+		to automatically create a new channel if it doesn't exist.
+		"""
+		uid = self.find_user_by_name(name)[0]
 		try:
 			return self.find_im_by_user_id(uid)
 		except KeyError:
 			# IM does not exist, create it?
 			if auto_create:
-				self.protocol.
+				response = self.api.im.open(token=self.token, user=uid)
+				return response[u'channel'][u'id']
+			else:
+				raise
 
 	def update(self, event):
 		"""
@@ -187,5 +200,5 @@ def request_session(token, url=None):
 		api = SlackApi(url)
 
 	response = api.rtm.start(token=token)
-	return SessionMetadata(response)
+	return SessionMetadata(response, api, token)
 
