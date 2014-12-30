@@ -72,7 +72,7 @@ class RtmProtocol(WebSocketClientProtocol):
 		return msg['id']
 
 
-	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None, parse='none'):
+	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None, parse='none', link_names=True, unfurl_links=True, unfurl_media=False, send_with_api=False):
 		"""
 		Sends a chat message to a given id, user, group or channel.
 
@@ -99,10 +99,23 @@ class RtmProtocol(WebSocketClientProtocol):
 		else:
 			raise Exception, 'Should not reach here.'
 
-		# Now send a message
-		return self.sendCommand(
-			type='message',
-			channel=id,
-			text=text,
-			parse=parse,
-		)
+		if send_with_api:
+			return self.meta.api.chat.postMessage(
+				token=self.meta.token,
+				channel=id,
+				text=text,
+				parse=parse,
+				link_names=link_names,
+				unfurl_links=unfurl_links,
+				unfurl_media=unfurl_media,
+			)
+		else:
+			return self.sendCommand(
+				type='message',
+				channel=id,
+				text=text,
+				parse=parse,
+				link_names=link_names,
+				unfurl_links=unfurl_links,
+				unfurl_media=unfurl_media,
+			)
