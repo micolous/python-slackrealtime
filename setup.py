@@ -14,7 +14,7 @@ setup(
 	version='0.1',
 	description='Twisted/Autobahn-based client for the Slack Real-Time Messaging API',
 	long_description=long_description,
-        author='Michael Farrell',
+	author='Michael Farrell',
 	author_email='micolous+py@gmail.com',
 	url='https://github.com/micolous/python-slackrealtime',
 	packages=['slackrealtime'],
