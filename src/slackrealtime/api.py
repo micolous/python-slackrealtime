@@ -33,7 +33,13 @@ class SlackMethod(object):
 		self.url = url
 		self.method = group + '.' + method
 
-	def __call__(self, **params):
+	def __call__(self, **kwargs):
+		# Prune any None parameters -- these should be defaults
+		params = {}
+		for k, v in kwargs.iteritems():
+			if v is not None:
+				params[k] = v
+
 		response = requests.post(urljoin(self.url, self.method), data=params)
 
 		response = response.json()

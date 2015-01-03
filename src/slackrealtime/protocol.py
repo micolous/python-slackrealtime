@@ -72,9 +72,20 @@ class RtmProtocol(WebSocketClientProtocol):
 		return msg['id']
 
 
-	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None, parse='none', link_names=True, unfurl_links=True, unfurl_media=False, send_with_api=False):
+	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None, parse='none', link_names=True, unfurl_links=True, unfurl_media=False, send_with_api=False, icon_emoji=None, icon_url=None, username=None):
 		"""
 		Sends a chat message to a given id, user, group or channel.
+
+		If the API token is not a bot token (xoxb), ``send_with_api`` may be set
+		to True.  This will send messages using ``chat.postMessage`` in the Slack
+		API, instead of using the WebSockets channel.
+
+		This makes the message sending process a little bit slower, however
+		permits writing of messages containing hyperlinks, like what can be done
+		with Incoming and Outgoing Webhooks integrations.
+
+		Bots are not permitted by Slack to use ``chat.postMessage`` so this will
+		result in an error.
 
 		Note: channel names must **not** be preceeded with ``#``.
 		"""
@@ -108,8 +119,15 @@ class RtmProtocol(WebSocketClientProtocol):
 				link_names=link_names,
 				unfurl_links=unfurl_links,
 				unfurl_media=unfurl_media,
+				icon_url=icon_url,
+				icon_emoji=icon_emoji,
+				username=username,
 			)
 		else:
+			assert icon_url is None, 'icon_url can only be set if send_with_api is True'
+			assert icon_emoji is None, 'icon_emoji can only be set if send_with_api is True'
+			assert username is None, 'username can only be set if send_with_api is True'
+
 			return self.sendCommand(
 				type='message',
 				channel=id,

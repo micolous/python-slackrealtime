@@ -5,9 +5,11 @@ Python library for the `Slack Real-Time Messaging API`_.  Requires Twisted and A
 
 Currently a work in progress, not all of the protocol is implemented, and the behaviour of this library is not fully documented.
 
-The project aims to provide a light wrapping around Slack's API in order to make objects of some of it's constructs again, and provide some convenience functionality (such as converting timestamps to fully-fledged ``datetime`` objects).  As such, the API will adapt (to a degree) to Slack RTM API changes.
+The project aims to provide a light wrapping around Slack's API in order to make objects of some of it's constructs, and provide some convenience functionality (such as converting timestamps to fully-fledged ``datetime`` objects).  As such, the API will adapt (to a degree) to Slack RTM API changes.
 
 It also includes a very thin wrapper around Slack's `REST API`_ (``slackrealtime.api``), for the purposes of setting up the initial connection.
+
+It is designed primarily to allow writing bots that interact with the Slack API.
 
 LGPLv3+ license.
 
@@ -27,3 +29,16 @@ In order to install the development version from the git repository::
 This can also be included in a ``requirements.txt`` file like this::
 
   git+git://github.com/micolous/python-slackrealtime.git#egg=slackrealtime
+
+Getting an API token
+--------------------
+
+There are two ways to get an API token for this library:
+
+* Use the `Slack Web API`_ page to create a token for your user.
+* Add a Bots integration to your team (which issues an ``xoxb`` token, which has some additional restrictions).
+
+.. _Slack Web API: https://api.slack.com/web
+
+This library does not presently support OAuth or other such authentication mechanisms, only static API tokens.
+
