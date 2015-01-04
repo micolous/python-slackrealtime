@@ -42,7 +42,12 @@ class SlackMethod(object):
 
 		response = requests.post(urljoin(self.url, self.method), data=params)
 
-		response = response.json()
+		if callable(response.json):
+			# Newer versions of requests use this API
+			response = response.json()
+		else:
+			# Older versions implement this as a property.
+			response = response.json
 
 		assert response['ok'] in (True, False), 'ok must be True or False'
 		if not response['ok']:
