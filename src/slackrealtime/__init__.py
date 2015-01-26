@@ -1,6 +1,6 @@
 """
 slackrealtime/__init__.py
-Copyright 2014 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2015 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -21,17 +21,19 @@ from autobahn.twisted.websocket import WebSocketClientFactory, connectWS
 from .protocol import RtmProtocol
 from .session import request_session
 
-def connect(token, protocol=RtmProtocol, api_url=None, debug=False):
+def connect(token, protocol=RtmProtocol, factory=WebSocketClientFactory, factory_kwargs=None, api_url=None, debug=False):
 	"""
 	Creates a new connection to the Slack Real-Time API.
 	
-	Returns (connection) which represents this connection to the API
-	server.
-	"""
-	metadata = request_session(token, api_url)
+	Returns (connection) which represents this connection to the API server.
 	
-	factory = WebSocketClientFactory(metadata.url, debug=debug)
-	factory.protocol = lambda *a,**k: protocol(*a,**k)._seedMetadata(metadata)
-	connection = connectWS(factory)
+	"""
+	if factory_kwargs is None:
+		factory_kwargs = dict()
+
+	metadata = request_session(token, api_url)
+	wsfactory = factory(metadata.url, debug=debug, **factory_kwargs)
+	wsfactory.protocol = lambda *a,**k: protocol(*a,**k)._seedMetadata(metadata)
+	connection = connectWS(wsfactory)
 	return connection
 
