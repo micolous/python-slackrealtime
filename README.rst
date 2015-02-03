@@ -22,13 +22,17 @@ There **also** exists a Python library written by Slack themselves which doesn't
 Installing the dev version
 --------------------------
 
+You'll need to install non-Python dependencies::
+
+  # apt-get install libffi-dev python-dev build-essential
+
 In order to install the development version from the git repository::
 
-  $ pip install 'git+git://github.com/micolous/python-slackrealtime.git#egg=slackrealtime'
+  $ pip install 'git+https://github.com/micolous/python-slackrealtime.git#egg=slackrealtime'
 
 This can also be included in a ``requirements.txt`` file like this::
 
-  git+git://github.com/micolous/python-slackrealtime.git#egg=slackrealtime
+  git+https://github.com/micolous/python-slackrealtime.git#egg=slackrealtime
 
 Getting an API token
 --------------------
