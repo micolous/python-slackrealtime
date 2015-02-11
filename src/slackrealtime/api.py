@@ -67,6 +67,10 @@ class SlackMethodGroup(object):
 		self.group = group
 
 	def __getattr__(self, method):
+		if self.group == 'user' and method == 'admin':
+			# 'xoxs' keys can access some extra undocumented methods.
+			return SlackMethodGroup(self.url, self.group + '.' + method)
+
 		return SlackMethod(self.url, self.group, method)
 
 	def __str__(self):
