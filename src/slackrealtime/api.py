@@ -1,6 +1,6 @@
 """
 slackrealtime/api.py - Barebones implementation of the Slack API.
-Copyright 2014 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2015 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by

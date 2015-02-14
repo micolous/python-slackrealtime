@@ -37,12 +37,14 @@ This can also be included in a ``requirements.txt`` file like this::
 Getting an API token
 --------------------
 
-There are two ways to get an API token for this library:
+There are three ways to get an API token for this library:
 
-* Use the `Slack Web API`_ page to create a token for your user.
-* Add a Bots integration to your team (which issues an ``xoxb`` token, which has some additional restrictions).
+* ``xoxb``: Add a Bots integration to your team, which has some `additional restrictions`_.
+* ``xoxp``: Use the `Slack Web API`_ page to create a token for your user.
+* ``xoxs``: Scrape the Slack Web UI for a variable called ``boot_data.api_token``, which additionally allows you access to the ``users.admin`` family of undocumented methods.
 
 .. _Slack Web API: https://api.slack.com/web
+.. _additional restrictions: https://api.slack.com/bot-users
 
 This library does not presently support OAuth or other such authentication mechanisms, only static API tokens.
 
