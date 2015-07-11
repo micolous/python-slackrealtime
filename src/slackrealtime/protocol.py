@@ -72,7 +72,7 @@ class RtmProtocol(WebSocketClientProtocol):
 		return msg['id']
 
 
-	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None, parse='none', link_names=True, unfurl_links=True, unfurl_media=False, send_with_api=False, icon_emoji=None, icon_url=None, username=None):
+	def sendChatMessage(self, text, id=None, user=None, group=None, channel=None, parse='none', link_names=True, unfurl_links=True, unfurl_media=False, send_with_api=False, icon_emoji=None, icon_url=None, username=None, attachments=None):
 		"""
 		Sends a chat message to a given id, user, group or channel.
 
@@ -122,6 +122,7 @@ class RtmProtocol(WebSocketClientProtocol):
 				icon_url=icon_url,
 				icon_emoji=icon_emoji,
 				username=username,
+				attachments=attachments,
 			)
 		else:
 			assert icon_url is None, 'icon_url can only be set if send_with_api is True'

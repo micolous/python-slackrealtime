@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from __future__ import absolute_import
-import requests
+import requests, json
 from urlparse import urljoin
 
 SLACK_API_URL = 'https://slack.com/api/'
@@ -38,7 +38,12 @@ class SlackMethod(object):
 		params = {}
 		for k, v in kwargs.iteritems():
 			if v is not None:
-				params[k] = v
+				if isinstance(v, list) or isinstance(v, dict):
+					# Complex datatypes, JSON encode it
+					params[k] = json.dumps(v)
+				else:
+					# Simple datatypes
+					params[k] = v
 
 		response = requests.post(urljoin(self.url, self.method), data=params)
 
