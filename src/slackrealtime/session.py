@@ -156,6 +156,8 @@ class SessionMetadata(object):
 			self.groups[gid] = event.channel
 		elif isinstance(event, ChannelLeft):
 			self.channels[event.channel][u'is_member'] = False
+		elif isinstance(event, GroupLeft):
+			self.groups[event.channel][u'is_member'] = False
 		elif isinstance(event, ChannelMarked):
 			# TODO: implement datetime handler properly
 			self.channels[event.channel][u'last_read'] = event._b[u'ts']
