@@ -136,24 +136,39 @@ class SessionMetadata(object):
 			self.channels[i] = event.channel
 		elif isinstance(event, ChannelArchive):
 			self.channels[event.channel][u'is_archived'] = True
+		elif isinstance(event, GroupArchive):
+			self.groups[event.channel][u'is_archived'] = True
 		elif isinstance(event, ChannelDeleted):
 			# FIXME: Handle delete events properly.
 			# Channels don't really get deleted, they're more just archived.
 			self.channels[event.channel][u'is_archived'] = True
 			self.channels[event.channel][u'is_open'] = False
+		elif isinstance(event, GroupClose):
+			# When you close a group, it isn't open to you anymore, but it might
+			# still exist. Treat it like ChannelDeleted
+			self.groups[event.channel][u'is_archived'] = True
+			self.groups[event.channel][u'is_open'] = False
 		elif isinstance(event, ChannelJoined):
 			cid = event.channel[u'id']
-
 			self.channels[cid] = event.channel
+		elif isinstance(event, GroupJoined):
+			gid = event.channel[u'id']
+			self.groups[gid] = event.channel
 		elif isinstance(event, ChannelLeft):
 			self.channels[event.channel][u'is_member'] = False
 		elif isinstance(event, ChannelMarked):
 			# TODO: implement datetime handler properly
 			self.channels[event.channel][u'last_read'] = event._b[u'ts']
+		elif isinstance(event, GroupMarked):
+			self.groups[event.channel][u'last_read'] = event._b[u'ts']
 		elif isinstance(event, ChannelRename):
-			self.channel[event.channel[u'id']][u'name'] = event.channel[u'name']
+			self.channels[event.channel[u'id']][u'name'] = event.channel[u'name']
+		elif isinstance(event, GroupRename):
+			self.groups[event.channel[u'id']][u'name'] = event.channel[u'name']
 		elif isinstance(event, ChannelUnarchive):
 			self.channels[event.channel][u'is_archived'] = False
+		elif isinstance(event, GroupUnarchive):
+			self.groups[event.channel][u'is_archived'] = False
 		elif isinstance(event, ImClose):
 			self.ims[event.channel][u'is_open'] = False
 		elif isinstance(event, ImCreated):
@@ -182,8 +197,8 @@ class SessionMetadata(object):
 			self.team[u'prefs'][event.name] = event.value
 		elif isinstance(event, TeamJoin):
 			uid = event.user[u'id']
-
 			self.users[uid] = event.user
+
 
 def request_session(token, url=None):
 	"""

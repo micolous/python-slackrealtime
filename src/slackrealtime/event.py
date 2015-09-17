@@ -78,6 +78,16 @@ class ImHistoryChanged(BaseHistoryChanged): pass
 class ImMarked(BaseEvent): pass
 class ImOpen(BaseEvent): pass
 
+class GroupJoined(BaseEvent): pass
+class GroupLeft(BaseEvent): pass
+class GroupOpen(BaseEvent): pass
+class GroupClose(BaseEvent): pass
+class GroupArchive(BaseEvent): pass
+class GroupUnarchive(BaseEvent): pass
+class GroupRename(BaseEvent): pass
+class GroupMarked(BaseEvent): pass
+class GroupHistoryChanged(BaseHistoryChanged): pass
+
 class PresenceChange(BaseEvent): pass
 class UserChange(BaseEvent): pass
 class TeamPrefChange(BaseEvent): pass
@@ -101,6 +111,16 @@ EVENT_HANDLERS = {
 	u'im_history_changed': ImHistoryChanged,
 	u'im_marked': ImMarked,
 	u'im_open': ImOpen,
+
+	u'group_joined': GroupJoined,
+	u'group_left': GroupLeft,
+	u'group_open': GroupOpen,
+	u'group_close': GroupClose,
+	u'group_archive': GroupArchive,
+	u'group_unarchive': GroupUnarchive,
+	u'group_rename': GroupRename,
+	u'group_marked': GroupMarked,
+	u'group_history_changed': GroupHistoryChanged,
 
 	u'presence_change': PresenceChange,
 	u'user_change': UserChange,
