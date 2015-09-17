@@ -179,7 +179,7 @@ class SessionMetadata(object):
 			uid = event.user[u'id']
 			del event.user[u'id']
 
-			if event.user[u'status'] is None and u'presence' in self.users[uid]:
+			if event.user.get(u'status') is None and u'presence' in self.users[uid]:
 				event.user[u'status'] = self.users[uid][u'presence']
 
 			self.users[uid] = event.user
