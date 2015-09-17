@@ -185,6 +185,11 @@ class SessionMetadata(object):
 			self.users[uid] = event.user
 		elif isinstance(event, TeamPrefChange):
 			self.team[u'prefs'][event.name] = event.value
+		elif isinstance(event, TeamJoin):
+			uid = event.user[u'id']
+			del event.user[u'id']
+
+			self.users[uid] = event.user
 
 def request_session(token, url=None):
 	"""

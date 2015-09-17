@@ -81,6 +81,7 @@ class ImOpen(BaseEvent): pass
 class PresenceChange(BaseEvent): pass
 class UserChange(BaseEvent): pass
 class TeamPrefChange(BaseEvent): pass
+class TeamJoin(BaseEvent): pass
 
 EVENT_HANDLERS = {
 	u'hello': Hello,
@@ -104,6 +105,7 @@ EVENT_HANDLERS = {
 	u'presence_change': PresenceChange,
 	u'user_change': UserChange,
 	u'team_pref_change': TeamPrefChange,
+	u'team_join': TeamJoin,
 }
 
 def decode_event(event):
