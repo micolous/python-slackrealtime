@@ -30,7 +30,6 @@ def transform_metadata(blob):
 	o = {}
 	for e in blob:
 		i = e[u'id']
-		del e[u'id']
 		o[i] = e
 	return o
 
@@ -132,7 +131,6 @@ class SessionMetadata(object):
 		"""
 		if isinstance(event, ChannelCreated):
 			i = event.channel[u'id']
-			del event.channel[u'id']
 			event.channel[u'is_archived'] = event.channel[u'is_member'] = False
 
 			self.channels[i] = event.channel
@@ -145,8 +143,7 @@ class SessionMetadata(object):
 			self.channels[event.channel][u'is_open'] = False
 		elif isinstance(event, ChannelJoined):
 			cid = event.channel[u'id']
-			del event.channel[u'id']
-			
+
 			self.channels[cid] = event.channel
 		elif isinstance(event, ChannelLeft):
 			self.channels[event.channel][u'is_member'] = False
@@ -161,7 +158,6 @@ class SessionMetadata(object):
 			self.ims[event.channel][u'is_open'] = False
 		elif isinstance(event, ImCreated):
 			i = event.channel[u'id']
-			del event.channel[u'id']
 			event.channel[u'user'] = event.user
 
 			self.ims[i] = event.channel
@@ -177,7 +173,6 @@ class SessionMetadata(object):
 			# Copy this out of the existing object
 
 			uid = event.user[u'id']
-			del event.user[u'id']
 
 			if event.user.get(u'status') is None and u'presence' in self.users[uid]:
 				event.user[u'status'] = self.users[uid][u'presence']
@@ -187,7 +182,6 @@ class SessionMetadata(object):
 			self.team[u'prefs'][event.name] = event.value
 		elif isinstance(event, TeamJoin):
 			uid = event.user[u'id']
-			del event.user[u'id']
 
 			self.users[uid] = event.user
 
