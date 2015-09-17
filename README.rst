@@ -9,7 +9,7 @@ The project aims to provide a light wrapping around Slack's API in order to make
 
 It also includes a very thin wrapper around Slack's `REST API`_ (``slackrealtime.api``), for the purposes of setting up the initial connection.
 
-It is designed primarily to allow writing bots that interact with the Slack API.
+It is designed primarily to allow writing bots that interact with the Slack API.  I have a `repository with examples available`_.
 
 LGPLv3+ license.
 
@@ -17,7 +17,9 @@ There **also** exists a Python library written by Slack themselves which doesn't
 
 .. _Slack Real-Time Messaging API: https://api.slack.com/rtm
 .. _REST API: https://api.slack.com/
+.. _repository with examples available: https://github.com/micolous/slackbots
 .. _python-slackclient: https://github.com/slackhq/python-slackclient
+
 
 Installing the dev version
 --------------------------
