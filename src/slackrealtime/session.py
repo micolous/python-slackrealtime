@@ -1,6 +1,6 @@
 """
 slackrealtime/session.py - Session management for Slack RTM
-Copyright 2014 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2015 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -200,6 +200,9 @@ class SessionMetadata(object):
 		elif isinstance(event, TeamJoin):
 			uid = event.user[u'id']
 			self.users[uid] = event.user
+		elif isinstance(event, BotAdded) or isinstance(event, BotChanged):
+			bid = event.bot[u'id']
+			self.bots[bid] = event.bot
 
 
 def request_session(token, url=None):

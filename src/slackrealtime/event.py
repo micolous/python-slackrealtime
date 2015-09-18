@@ -1,6 +1,6 @@
 """
 slackrealtime/event.py - Event handling for Slack RTM.
-Copyright 2014 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2015 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -57,8 +57,13 @@ class Message(BaseEvent):
 
 class BaseHistoryChanged(BaseEvent):
 	def __init__(self, body):
-		super(ChannelHistoryChanged, self).__init__(body)
+		super(BaseHistoryChanged, self).__init__(body)
 		self.latest = datetime.fromtimestamp(float(self._b['latest']), UTC)
+		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), UTC)
+
+class BaseReactionEvent(BaseEvent):
+	def __init__(self, body):
+		super(BaseReactionEvent, self).__init__(body)
 		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), UTC)
 
 class Ack(BaseEvent): pass
@@ -87,6 +92,12 @@ class GroupUnarchive(BaseEvent): pass
 class GroupRename(BaseEvent): pass
 class GroupMarked(BaseEvent): pass
 class GroupHistoryChanged(BaseHistoryChanged): pass
+
+class BotAdded(BaseEvent): pass
+class BotChanged(BaseEvent): pass
+
+class ReactionAdded(BaseReactionEvent): pass
+class ReactionRemoved(BaseReactionEvent): pass
 
 class PresenceChange(BaseEvent): pass
 class UserChange(BaseEvent): pass
@@ -121,6 +132,12 @@ EVENT_HANDLERS = {
 	u'group_rename': GroupRename,
 	u'group_marked': GroupMarked,
 	u'group_history_changed': GroupHistoryChanged,
+
+	u'bot_added': BotAdded,
+	u'bot_changed': BotChanged,
+
+	u'reaction_added': ReactionAdded,
+	u'reaction_removed': ReactionRemoved,
 
 	u'presence_change': PresenceChange,
 	u'user_change': UserChange,
