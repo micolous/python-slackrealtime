@@ -58,7 +58,7 @@ class Message(BaseEvent):
 		try:
 			return super(Message, self).__getattr__(attr)
 		except AttributeError:
-			if attr in ['user', 'subtype', 'attachments']:
+			if attr in ['user', 'username', 'subtype', 'attachments']:
 				# Bot message types are different
 				return None
 
