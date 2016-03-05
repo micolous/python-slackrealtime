@@ -43,6 +43,8 @@ class BaseEvent(object):
 	def copy(self):
 		return decode_event(self._b)
 
+	def __str__(self):
+		return '<BaseEvent: @%r %r>' % (self.ts, self._b)
 
 class Unknown(BaseEvent):
 	def __str__(self):
@@ -52,8 +54,36 @@ class Unknown(BaseEvent):
 class Hello(BaseEvent): pass
 
 class Message(BaseEvent):
+	def __getattr__(self, attr):
+		try:
+			return super(Message, self).__getattr__(attr)
+		except AttributeError:
+			if attr in ['user', 'subtype', 'attachments']:
+				# Bot message types are different
+				return None
+
+			# Raise other AttributeErrors
+			raise
+
 	def __str__(self):
-		return '<Message: %s: <%s> %s>' % (self.channel, self.user, self.text)
+		subtype = self.subtype
+		if subtype is None:
+			subtype = ''
+
+		user = self.user
+		if user is None:
+			# Bot
+			user = self.username
+		else:
+			user = u'@' + user
+
+		attachments = ''
+		if self.attachments:
+			attachments = ' attachments=' + repr(self.attachments)
+			if len(attachments) > 40:
+				attachments = attachments[:37] + '...'
+
+		return '<Message(%s): %s: <%s> %s %s>' % (subtype, self.channel, user, self.text, attachments)
 
 class BaseHistoryChanged(BaseEvent):
 	def __init__(self, body):
