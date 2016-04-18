@@ -131,6 +131,7 @@ class ReactionRemoved(BaseReactionEvent): pass
 
 class PresenceChange(BaseEvent): pass
 class UserChange(BaseEvent): pass
+class UserTyping(BaseEvent): pass
 class TeamPrefChange(BaseEvent): pass
 class TeamJoin(BaseEvent): pass
 
@@ -171,6 +172,7 @@ EVENT_HANDLERS = {
 
 	u'presence_change': PresenceChange,
 	u'user_change': UserChange,
+	u'user_typing': UserTyping,
 	u'team_pref_change': TeamPrefChange,
 	u'team_join': TeamJoin,
 }
