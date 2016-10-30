@@ -20,9 +20,12 @@ from __future__ import absolute_import
 from argparse import ArgumentParser, FileType
 from isodate import parse_datetime
 import json
+import re
 from pytz import utc
 from sys import stdout
 from ..api import SlackApi
+
+USERNAME_RE = re.compile(r'\<@(U[A-Z0-9]+)\>')
 
 
 def main():
@@ -64,6 +67,9 @@ def main():
 	api = SlackApi()
 	
 	users = api.users.list(token=options.token)
+	username_map = {}
+	for user in users['members']:
+		username_map[user['id']] = user['name']
 	
 	channels = api.groups.list(token=options.token)
 	channel_id = None
@@ -82,16 +88,27 @@ def main():
 	latest = end_time
 	while True:
 		chunk = api.groups.history(token=options.token, channel=channel_id, latest=latest, oldest=start_time, count=options.chunk_size)
-		history += chunk['messages']
-		if not chunk['has_more']:
-			break
-		
-		# Find new spot to search from
+				
 		latest = float(chunk['latest'])
 		for msg in chunk['messages']:
 			ts = float(msg['ts'])
 			if ts < latest:
-				latest = ts		
+				latest = ts
+
+			# Clean up usernames
+			if 'user' in msg:
+				msg['user_name'] = username_map[msg['user']]
+			if 'reactions' in msg:
+				for reaction in msg['reactions']:
+					reaction['users_name'] = [username_map[x] for x in reaction['users']]
+			if msg['type'] == 'message' and '<@' in msg['text']:
+				# Translate user IDs
+				msg['text'] = USERNAME_RE.sub(lambda m: ('<@%s|%s>' % (m.group(1), username_map[m.group(1)])), msg['text'])
+
+		history += chunk['messages']
+
+		if not chunk['has_more']:
+			break
 
 		# ...and continue!
 
