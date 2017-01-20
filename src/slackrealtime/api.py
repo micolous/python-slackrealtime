@@ -1,6 +1,6 @@
 """
 slackrealtime/api.py - Barebones implementation of the Slack API.
-Copyright 2014-2015 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2016 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -17,10 +17,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from __future__ import absolute_import
+from datetime import datetime
+from pytz import utc
 import requests, json
 from urlparse import urljoin
 
 SLACK_API_URL = 'https://slack.com/api/'
+
+def totimestamp(dt, epoch=datetime(1970, 1, 1, tzinfo=utc)):
+	"""
+	Converts a datetime object to a number of seconds since a given epoch.
+	Defaults to UNIX epoch.
+	"""
+	return (dt - epoch).total_seconds()
+
 
 class SlackError(Exception):
 	"""
@@ -41,6 +51,9 @@ class SlackMethod(object):
 				if isinstance(v, list) or isinstance(v, dict):
 					# Complex datatypes, JSON encode it
 					params[k] = json.dumps(v)
+				elif isinstance(v, datetime):
+					# Datetime, convert to UNIX time
+					params[k] = str(totimestamp(v))
 				else:
 					# Simple datatypes
 					params[k] = v
