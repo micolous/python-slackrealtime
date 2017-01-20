@@ -28,10 +28,12 @@ class BaseEvent(object):
 			# Time value is present in the message, parse it.
 			self.has_ts = True
 			self.ts = datetime.fromtimestamp(float(self._b['ts']), UTC)
+			self.raw_ts = self._b['ts']
 		else:
 			# Time value is missing in the message, infer it based on recieve time.
 			self.has_ts = False
 			self.ts = datetime.now(UTC)
+			self.raw_ts = None
 
 	def __getattr__(self, attr):
 		attr = unicode(attr)
@@ -58,7 +60,7 @@ class Message(BaseEvent):
 		try:
 			return super(Message, self).__getattr__(attr)
 		except AttributeError:
-			if attr in ['user', 'username', 'subtype', 'attachments']:
+			if attr in ['user', 'username', 'subtype', 'attachments', 'thread_ts']:
 				# Bot message types are different
 				return None
 
