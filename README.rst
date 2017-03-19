@@ -42,10 +42,10 @@ Getting an API token
 There are three ways to get an API token for this library:
 
 * ``xoxb``: Add a Bots integration to your team, which has some `additional restrictions`_.
-* ``xoxp``: Use the `Slack Web API`_ page to create a token for your user.
+* ``xoxp``: Use the `Legacy Token Generator`_ to create a token for your user, or implement OAuth2 (batteries not included).
 * ``xoxs``: Scrape the Slack Web UI for a variable called ``boot_data.api_token``, which additionally allows you access to the ``users.admin`` family of undocumented methods.
 
-.. _Slack Web API: https://api.slack.com/web
+.. _Legacy Token Generator: https://api.slack.com/custom-integrations/legacy-tokens
 .. _additional restrictions: https://api.slack.com/bot-users
 
 This library does not presently support OAuth or other such authentication mechanisms, only static API tokens.
