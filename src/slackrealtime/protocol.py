@@ -1,6 +1,6 @@
 """
 slackrealtime/protocol.py - Twisted Protocol library for Slack RTM
-Copyright 2014 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2017 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import absolute_import
 from autobahn.twisted.websocket import WebSocketClientProtocol
 from sys import maxint
+from twisted.internet import task
 from twisted.python import log
 from .event import decode_event
 
@@ -33,7 +34,17 @@ class RtmProtocol(WebSocketClientProtocol):
 		self.meta = meta
 		self.meta.protocol = self
 		self.next_message_id = 1
+		self._pinger = task.LoopingCall(self._sendPing)
 		return self
+
+	def _sendPing(self):
+		self.sendCommand(type='ping')
+
+	def onConnect(self, response):
+		self._pinger.start(30.)
+
+	def onClose(self, wasClean, code, reason):
+		self._pinger.stop()
 
 	def onMessage(self, msg, binary):
 		# What to do on getting messages.

@@ -1,6 +1,6 @@
 """
 slackrealtime/event.py - Event handling for Slack RTM.
-Copyright 2014-2015 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2017 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -60,7 +60,7 @@ class Message(BaseEvent):
 		try:
 			return super(Message, self).__getattr__(attr)
 		except AttributeError:
-			if attr in ['user', 'username', 'subtype', 'attachments', 'thread_ts']:
+			if attr in ['user', 'username', 'subtype', 'attachments', 'thread_ts', 'text']:
 				# Bot message types are different
 				return None
 
