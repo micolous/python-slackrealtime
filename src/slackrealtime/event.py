@@ -1,6 +1,6 @@
 """
 slackrealtime/event.py - Event handling for Slack RTM.
-Copyright 2014-2017 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2020 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -17,7 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from datetime import datetime
-from pytz import UTC
+from pytz import utc
+
 
 class BaseEvent(object):
 	def __init__(self, body):
@@ -27,20 +28,20 @@ class BaseEvent(object):
 		if 'ts' in self._b:
 			# Time value is present in the message, parse it.
 			self.has_ts = True
-			self.ts = datetime.fromtimestamp(float(self._b['ts']), UTC)
+			self.ts = datetime.fromtimestamp(float(self._b['ts']), utc)
 			self.raw_ts = self._b['ts']
 		else:
-			# Time value is missing in the message, infer it based on recieve time.
+			# Time value is missing in the message, infer it based on receive time.
 			self.has_ts = False
-			self.ts = datetime.now(UTC)
+			self.ts = datetime.now(utc)
 			self.raw_ts = None
 
 	def __getattr__(self, attr):
-		attr = unicode(attr)
+		attr = str(attr)
 		if attr in self._b:
 			return self._b[attr]
 		else:
-			raise AttributeError, attr
+			raise AttributeError(attr)
 
 	def copy(self):
 		return decode_event(self._b)
@@ -48,12 +49,15 @@ class BaseEvent(object):
 	def __str__(self):
 		return '<BaseEvent: @%r %r>' % (self.ts, self._b)
 
+
 class Unknown(BaseEvent):
 	def __str__(self):
 		return '<Unknown: @%r %r>' % (self.ts, self._b)
 
 
-class Hello(BaseEvent): pass
+class Hello(BaseEvent):
+	pass
+
 
 class Message(BaseEvent):
 	def __getattr__(self, attr):
@@ -87,16 +91,19 @@ class Message(BaseEvent):
 
 		return '<Message(%s): %s: <%s> %s %s>' % (subtype, self.channel, user, self.text, attachments)
 
+
 class BaseHistoryChanged(BaseEvent):
 	def __init__(self, body):
 		super(BaseHistoryChanged, self).__init__(body)
 		self.latest = datetime.fromtimestamp(float(self._b['latest']), UTC)
 		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), UTC)
 
+
 class BaseReactionEvent(BaseEvent):
 	def __init__(self, body):
 		super(BaseReactionEvent, self).__init__(body)
 		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), UTC)
+
 
 class Ack(BaseEvent): pass
 class ChannelArchive(BaseEvent): pass
@@ -136,6 +143,7 @@ class UserChange(BaseEvent): pass
 class UserTyping(BaseEvent): pass
 class TeamPrefChange(BaseEvent): pass
 class TeamJoin(BaseEvent): pass
+
 
 EVENT_HANDLERS = {
 	u'hello': Hello,
@@ -178,6 +186,7 @@ EVENT_HANDLERS = {
 	u'team_pref_change': TeamPrefChange,
 	u'team_join': TeamJoin,
 }
+
 
 def decode_event(event):
 	event = event.copy()

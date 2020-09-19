@@ -17,16 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import absolute_import
 from autobahn.twisted.websocket import WebSocketClientProtocol
-from sys import maxint
+import json
 from twisted.internet import task
 from twisted.python import log
 from .event import decode_event
 
-try:
-	# SimpleJSON is better for many cases in modern Python.
-	import simplejson as json
-except ImportError:
-	import json
+MAX_MESSAGE_ID = 2**31
 
 
 class RtmProtocol(WebSocketClientProtocol):
@@ -76,10 +72,10 @@ class RtmProtocol(WebSocketClientProtocol):
 		msg['id'] = self.next_message_id
 		self.next_message_id += 1
 
-		if self.next_message_id >= maxint:
+		if self.next_message_id >= MAX_MESSAGE_ID:
 			self.next_message_id = 1
 
-		self.sendMessage(json.dumps(msg))
+		self.sendMessage(json.dumps(msg).encode('utf-8'))
 		return msg['id']
 
 
@@ -119,7 +115,7 @@ class RtmProtocol(WebSocketClientProtocol):
 			# Message sent to a channel
 			id = self.meta.find_channel_by_name(channel)[0]
 		else:
-			raise Exception, 'Should not reach here.'
+			raise Exception('Should not reach here.')
 
 		if send_with_api:
 			return self.meta.api.chat.postMessage(

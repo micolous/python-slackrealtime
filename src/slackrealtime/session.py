@@ -15,11 +15,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+
 from __future__ import absolute_import
 from .api import SlackApi
 from .event import *
 import requests
 from twisted.internet import reactor
+
 
 def transform_metadata(blob):
 	"""
@@ -67,12 +69,12 @@ class SessionMetadata(object):
 		Raises KeyError if the given key cannot be found.
 		"""
 		original = value
-		value = unicode(value.upper())
+		value = str(value.upper())
 		for k, resource in resource_list.iteritems():
 			if key in resource and resource[key].upper() == value:
 				return k, resource
 
-		raise KeyError, original
+		raise KeyError(original)
 
 	def find_channel_by_name(self, name):
 		"""

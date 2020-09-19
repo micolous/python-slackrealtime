@@ -1,6 +1,6 @@
 """
 slackrealtime/api.py - Barebones implementation of the Slack API.
-Copyright 2014-2016 Michael Farrell <http://micolous.id.au>
+Copyright 2014-2020 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -18,11 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
 from datetime import datetime
+import json
 from pytz import utc
-import requests, json
-from urlparse import urljoin
+import requests
+from urllib.parse import urljoin
+
 
 SLACK_API_URL = 'https://slack.com/api/'
+
 
 def totimestamp(dt, epoch=datetime(1970, 1, 1, tzinfo=utc)):
 	"""
@@ -38,6 +41,7 @@ class SlackError(Exception):
 	"""
 	pass
 
+
 class SlackMethod(object):
 	def __init__(self, url, group, method):
 		self.url = url
@@ -46,7 +50,7 @@ class SlackMethod(object):
 	def __call__(self, **kwargs):
 		# Prune any None parameters -- these should be defaults
 		params = {}
-		for k, v in kwargs.iteritems():
+		for k, v in kwargs.items():
 			if v is not None:
 				if isinstance(v, list) or isinstance(v, dict):
 					# Complex datatypes, JSON encode it
@@ -69,7 +73,7 @@ class SlackMethod(object):
 
 		assert response['ok'] in (True, False), 'ok must be True or False'
 		if not response['ok']:
-			raise SlackError, response['error']
+			raise SlackError(response['error'])
 
 		# Trim this attribute as it is no longer required
 		del response['ok']

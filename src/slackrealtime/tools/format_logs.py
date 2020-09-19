@@ -22,13 +22,13 @@ from datetime import datetime
 import json
 import re
 from pytz import timezone, utc
-from sys import stdout
-from ..api import SlackApi
+
 
 USERNAME_RE = re.compile(r'\<@(U[A-Z0-9]+)\|([a-zA-Z0-9]+)\>')
 BOLD_RE = re.compile(r'(\s)\*([^*\n]+?)\*')
 ITALIC_RE = re.compile(r'(\s)_([^_\n]+?)_') 
 PRETTY_HYPERLINK_RE = re.compile(r'\<(http[^>|\n]+?)(\|([^>\n]+?))?\>')
+
 
 def slack_to_markdown(i):
 	# Transform bold to real bold
@@ -38,6 +38,7 @@ def slack_to_markdown(i):
 	o = PRETTY_HYPERLINK_RE.sub(lambda m: ' %s ' % (('[%s](%s)' % (m.group(3), m.group(1))) if m.group(2) else m.group(1)), o)
 	
 	return o
+
 
 def format_logs(input_files, output_file, tz='UTC'):
 	tz = timezone(tz)
@@ -93,7 +94,7 @@ All times shown are `%(tz)s`.
 				
 			# TODO: handle reactions
 		else:
-			print ('Unhandled type %s' % m['type'])
+			print('Unhandled type %s' % m['type'])
 			
 	output_file.flush()
 	output_file.close()
@@ -113,6 +114,7 @@ def main():
 
 	options = parser.parse_args()
 	format_logs(options.input_files, options.output, options.tz)
+
 
 if __name__ == '__main__':
 	main()

@@ -1,9 +1,13 @@
 ``python-slackrealtime``
 ========================
 
-Python library for the `Slack Real-Time Messaging API`_.  Requires Twisted and Autobahn.
+Python library for the `Slack Real-Time Messaging API`_.  Requires Python 3, Twisted and Autobahn.
 
-Currently a work in progress, not all of the protocol is implemented, and the behaviour of this library is not fully documented.
+This library was a work in progress, and probably won't be "finished".  I started writing this in
+2014, to migrate some bots from Slack's IRC gateway, when the state of Python bindings for Slack
+was very poor.  "One day" I'll migrate those bots to some other library.
+
+**tl;dr: Please use `python-slackclient`_ instead!**
 
 The project aims to provide a light wrapping around Slack's API in order to make objects of some of it's constructs, and provide some convenience functionality (such as converting timestamps to fully-fledged ``datetime`` objects).  As such, the API will adapt (to a degree) to Slack RTM API changes.
 
@@ -26,7 +30,7 @@ Installing the dev version
 
 You'll need to install non-Python dependencies::
 
-  # apt-get install libffi-dev python-dev build-essential
+  # apt install libffi-dev python-dev build-essential
 
 In order to install the development version from the git repository::
 

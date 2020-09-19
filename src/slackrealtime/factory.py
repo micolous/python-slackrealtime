@@ -1,6 +1,6 @@
 """
 slackrealtime/factory.py
-Copyright 2014-2015 Michael Farrell <http://micolous.id.au>
+Copyright 2014, 2015, 2020 Michael Farrell <http://micolous.id.au>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -46,11 +46,11 @@ class DyingWebSocketClientFactory(WebSocketClientFactory):
 
 	"""
 	def clientConnectionLost(self, connector, reason):
-		print 'Connection lost:', reason
+		print('Connection lost:', reason)
 		reactor.stop()
 
 
 	def clientConnectionFailed(self, connector, reason):
-		print 'Connection failed:', reason
+		print('Connection failed:', reason)
 		reactor.stop()
 

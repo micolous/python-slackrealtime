@@ -22,8 +22,8 @@ from isodate import parse_datetime
 import json
 import re
 from pytz import utc
-from sys import stdout
 from ..api import SlackApi
+
 
 USERNAME_RE = re.compile(r'\<@(U[A-Z0-9]+)\>')
 
@@ -79,7 +79,7 @@ def main():
 			break
 	
 	if channel_id is None:
-		raise Exception, 'channel not found'
+		raise Exception('channel not found')
 	
 	start_time = utc.localize(parse_datetime(options.start))
 	end_time = utc.localize(parse_datetime(options.end))
@@ -113,7 +113,7 @@ def main():
 		# ...and continue!
 
 	json.dump(history, options.output)
-	print 'done grabbing, got %d messages' % len(history)
+	print('done grabbing, got %d messages' % len(history))
 
 if __name__ == '__main__':
 	main()
