@@ -95,14 +95,14 @@ class Message(BaseEvent):
 class BaseHistoryChanged(BaseEvent):
 	def __init__(self, body):
 		super(BaseHistoryChanged, self).__init__(body)
-		self.latest = datetime.fromtimestamp(float(self._b['latest']), UTC)
-		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), UTC)
+		self.latest = datetime.fromtimestamp(float(self._b['latest']), utc)
+		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), utc)
 
 
 class BaseReactionEvent(BaseEvent):
 	def __init__(self, body):
 		super(BaseReactionEvent, self).__init__(body)
-		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), UTC)
+		self.event_ts = datetime.fromtimestamp(float(self._b['event_ts']), utc)
 
 
 class Ack(BaseEvent): pass

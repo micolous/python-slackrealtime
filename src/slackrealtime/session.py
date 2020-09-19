@@ -70,7 +70,7 @@ class SessionMetadata(object):
 		"""
 		original = value
 		value = str(value.upper())
-		for k, resource in resource_list.iteritems():
+		for k, resource in resource_list.items():
 			if key in resource and resource[key].upper() == value:
 				return k, resource
 
